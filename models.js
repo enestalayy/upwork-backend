@@ -32,6 +32,23 @@ const User = mongoose.model("User", userSchema);
 const Job = mongoose.model("Job", jobSchema);
 
 module.exports = { User, Job };
+
+//   const users = await User.find({});
+//   for (let user of users) {
+//     for (let filter of user.filters) {
+//       const scrapedJobs = await scrapeJobList(filter.url);
+//       const savedJobs = await Promise.all(
+//         scrapedJobs.map(async (jobData) => {
+//           const newJob = new Job(jobData);
+//           await newJob.save();
+//           return newJob._id;
+//         })
+//       );
+//       filter.jobs = savedJobs;
+//       await user.save();
+//     }
+//   }
+
 // if (
 //   req.headers.get("Authorization") !== `Bearer ${process.env.CRON_SECRET}`
 // ) {

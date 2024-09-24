@@ -84,14 +84,18 @@ const express = require("express");
 const cronHandler = require("./api/cron");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
 app.get("/api/cron", cronHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server ${PORT} üzerinde çalışıyor...`);
-});
-
+// Vercel'in serverless fonksiyonları için gerekli
 module.exports = app;
+
+// Yerel geliştirme için
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server ${PORT} üzerinde çalışıyor...`);
+  });
+}
