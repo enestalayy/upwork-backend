@@ -10,10 +10,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 mongoose
-  .connect(
-    "mongodb+srv://enestalayy:srg9BHfvcFpX8AxN@upwork.4l0rg.mongodb.net/?retryWrites=true&w=majority&appName=upwork",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("MongoDB'ye başarıyla bağlandı"))
   .catch((err) => console.error("MongoDB bağlantı hatası:", err));
 
