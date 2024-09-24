@@ -32,3 +32,8 @@ const User = mongoose.model("User", userSchema);
 const Job = mongoose.model("Job", jobSchema);
 
 module.exports = { User, Job };
+// if (
+//   req.headers.get("Authorization") !== `Bearer ${process.env.CRON_SECRET}`
+// ) {
+//   return res.status(401).end("Unauthorized");
+// } else
