@@ -21,10 +21,10 @@ module.exports = async (req, res) => {
       //   await scrapeJobList();
 
       console.log("Tüm kullanıcılar için işler scrape edildi ve kaydedildi.");
-      //   res.status(200).json({
-      //     message: "Cron job başarıyla çalıştı",
-      //     timestamp: now.toISOString(),
-      //   });
+      res.status(200).json({
+        message: "Cron job başarıyla çalıştı",
+        //   timestamp: now.toISOString(),
+      });
     } catch (error) {
       console.error("Cron job hatası:", error);
       res.status(500).json({ error: "Sunucu hatası", details: error.message });
