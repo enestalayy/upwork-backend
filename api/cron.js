@@ -14,21 +14,21 @@ mongoose
 module.exports = async (req, res) => {
   if (req.method === "GET") {
     try {
-      const users = await User.find({});
-      for (let user of users) {
-        for (let filter of user.filters) {
-          const scrapedJobs = await scrapeJobList(filter.url);
-          const savedJobs = await Promise.all(
-            scrapedJobs.map(async (jobData) => {
-              const newJob = new Job(jobData);
-              await newJob.save();
-              return newJob._id;
-            })
-          );
-          filter.jobs = savedJobs;
-          await user.save();
-        }
-      }
+      //   const users = await User.find({});
+      //   for (let user of users) {
+      //     for (let filter of user.filters) {
+      //       const scrapedJobs = await scrapeJobList(filter.url);
+      //       const savedJobs = await Promise.all(
+      //         scrapedJobs.map(async (jobData) => {
+      //           const newJob = new Job(jobData);
+      //           await newJob.save();
+      //           return newJob._id;
+      //         })
+      //       );
+      //       filter.jobs = savedJobs;
+      //       await user.save();
+      //     }
+      //   }
       console.log("Tüm kullanıcılar için işler scrape edildi ve kaydedildi.");
       res.status(200).json({ message: "Cron job başarıyla çalıştı" });
     } catch (error) {
