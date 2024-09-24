@@ -1,10 +1,8 @@
-const express = require("express");
-const scrapeJobList = require("../../scrape");
+const scrapeJobList = require("../scrape");
 const mongoose = require("mongoose");
-const { User, Job } = require("../../models");
+const { User, Job } = require("../models");
 
-const app = express();
-
+// MongoDB bağlantısı
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
