@@ -1,5 +1,4 @@
 const express = require("express");
-const cron = require("node-cron");
 const scrapeJobList = require("./scrape");
 const mongoose = require("mongoose");
 const { User, Job } = require("./models"); // MongoDB modellerimizi import ediyoruz
