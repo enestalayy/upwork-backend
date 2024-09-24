@@ -18,24 +18,25 @@ module.exports = async (req, res) => {
       console.log(`Cron job çalıştı: ${now.toISOString()}`);
 
       const users = await User.find({});
-      for (let user of users) {
-        for (let filter of user.filters) {
-          const scrapedJobs = await scrapeJobList(filter.url);
-          const savedJobs = await Promise.all(
-            scrapedJobs.map(async (jobData) => {
-              const newJob = new Job(jobData);
-              await newJob.save();
-              return newJob._id;
-            })
-          );
-          filter.jobs = savedJobs;
-          await user.save();
-        }
-      }
-
+      //   for (let user of users) {
+      //     for (let filter of user.filters) {
+      //       const scrapedJobs = await scrapeJobList(filter.url);
+      //       const savedJobs = await Promise.all(
+      //         scrapedJobs.map(async (jobData) => {
+      //           const newJob = new Job(jobData);
+      //           await newJob.save();
+      //           return newJob._id;
+      //         })
+      //       );
+      //       filter.jobs = savedJobs;
+      //       await user.save();
+      //     }
+      //   }
+      console.log("users :>> ", users);
       console.log("Tüm kullanıcılar için işler scrape edildi ve kaydedildi.");
       res.status(200).json({
         message: "Cron job başarıyla çalıştı",
+        users,
         timestamp: now.toISOString(),
       });
     } catch (error) {
