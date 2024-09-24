@@ -11,6 +11,41 @@ mongoose
   .then(() => console.log("MongoDB'ye başarıyla bağlandı"))
   .catch((err) => console.error("MongoDB bağlantı hatası:", err));
 
+const userData = {
+  name: "Yigit",
+  surname: "Cakmak",
+  email: "work@yigitcakmak.com",
+  createdAt: new Date(1727177206682),
+  filters: [
+    {
+      url: "https://www.upwork.com/nx/search/jobs/?client_hires=1-9,10-&payment_verified=1&q=%28html,%20OR%20css,%20OR%20javascript,%20OR%20figma,%20OR%20tailwind,%20OR%20bootstrap%29%20AND%20NOT%20%28adobe,%20OR%20wordpress,%20OR%20shopify,%20OR%20laravel,%20OR%20symfony,%20OR%20aws,%20OR%20kotlin,%20OR%20salesforce,%20OR%20sap,%20OR%20swift,%20OR%20mysql,%20OR%20ruby,%20OR%20nginx,%20OR%20java,%20OR%20matlab,%20OR%20c%2B%2B,%20OR%20c%23,%20OR%20azure%20OR%20php,%20OR%20ios,%20OR%20android%20OR%20django%29&t=1",
+      name: "Web Development Jobs",
+      description: "Latest web development job postings",
+      jobs: [],
+    },
+  ],
+};
+
+async function addUserIfNotExist() {
+  try {
+    // Kullanıcıyı email adresine göre kontrol et
+    const existingUser = await User.findOne({ email: userData.email });
+    if (existingUser) {
+      console.log("Kullanıcı zaten mevcut:", existingUser);
+    } else {
+      // Kullanıcı yoksa yeni bir kullanıcı oluştur ve kaydet
+      const newUser = new User(userData);
+      await newUser.save();
+      console.log("Yeni kullanıcı eklendi:", newUser);
+    }
+  } catch (err) {
+    console.error("Kullanıcı eklerken hata oluştu:", err);
+  }
+}
+
+// Fonksiyonu çağır
+addUserIfNotExist();
+
 module.exports = async (req, res) => {
   if (req.method === "GET") {
     try {
