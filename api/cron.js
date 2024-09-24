@@ -14,16 +14,29 @@ mongoose
 module.exports = async (req, res) => {
   if (req.method === "GET") {
     try {
-      //   const now = new Date();
-      //   console.log(`Cron job çalıştı: ${now.toISOString()}`);
+      const now = new Date();
+      console.log(`Cron job çalıştı: ${now.toISOString()}`);
 
-      //   // Burada scrapeJobList ve diğer işlemlerinizi gerçekleştirin
-      //   await scrapeJobList();
+      const users = await User.find({});
+      for (let user of users) {
+        for (let filter of user.filters) {
+          const scrapedJobs = await scrapeJobList(filter.url);
+          const savedJobs = await Promise.all(
+            scrapedJobs.map(async (jobData) => {
+              const newJob = new Job(jobData);
+              await newJob.save();
+              return newJob._id;
+            })
+          );
+          filter.jobs = savedJobs;
+          await user.save();
+        }
+      }
 
       console.log("Tüm kullanıcılar için işler scrape edildi ve kaydedildi.");
       res.status(200).json({
         message: "Cron job başarıyla çalıştı",
-        //   timestamp: now.toISOString(),
+        timestamp: now.toISOString(),
       });
     } catch (error) {
       console.error("Cron job hatası:", error);
