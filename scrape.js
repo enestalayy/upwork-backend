@@ -1,10 +1,11 @@
 const puppeteer = require("puppeteer");
 
 async function scrapeJobList(url) {
-  console.log("url :>> ", url);
   // Tarayıcıyı başlat
-  const browser = await puppeteer.launch({ headless: false }); // Tarayıcı arayüzünü görmek için headless false olabilir
+  const browser = await puppeteer.launch(); // Tarayıcı arayüzünü görmek için headless false olabilir
+  console.log("browser :>> ", browser);
   const page = await browser.newPage();
+  console.log("page :>> ", page);
 
   // İlgili URL'ye git
   await page.goto(url);
