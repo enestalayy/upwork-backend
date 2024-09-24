@@ -5,6 +5,14 @@ const { User, Job } = require("./models"); // MongoDB modellerimizi import ediyo
 
 const app = express();
 // const PORT = process.env.PORT || 3000;
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "*", // Tüm alan adlarına izin ver
+    methods: ["GET", "POST"], // İzin verilen HTTP metodları
+  })
+);
 
 app.use(express.json());
 
@@ -15,25 +23,6 @@ mongoose
   })
   .then(() => console.log("MongoDB'ye başarıyla bağlandı"))
   .catch((err) => console.error("MongoDB bağlantı hatası:", err));
-
-// // Tek kullanıcıyı oluştur (eğer yoksa)
-// async function createDefaultUser() {
-//   try {
-//     const user = await User.findOne({ username: "defaultuser" });
-//     if (!user) {
-//       await User.create({
-//         name: "Yigit",
-//         surname: "Cakmak",
-//         email: "work@yigitcakmak.com",
-//       });
-//       console.log("Varsayılan kullanıcı oluşturuldu");
-//     }
-//   } catch (error) {
-//     console.error("Kullanıcı oluşturma hatası:", error);
-//   }
-// }
-
-// createDefaultUser();
 
 app.get("/api/cron", async (req, res) => {
   try {
