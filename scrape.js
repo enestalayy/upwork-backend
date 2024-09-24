@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 
 async function scrapeJobList(url) {
   // Tarayıcıyı başlat
