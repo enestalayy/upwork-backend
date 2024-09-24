@@ -21,7 +21,8 @@ module.exports = async (req, res) => {
       const user = users[0];
       for (let filter of user.filters) {
         console.log("filter.url :>> ", filter.url);
-        //     const scrapedJobs = await scrapeJobList(filter.url);
+        const scrapedJobs = await scrapeJobList(filter.url);
+        console.log("scrapedJobs :>> ", scrapedJobs);
         //     const savedJobs = await Promise.all(
         //       scrapedJobs.map(async (jobData) => {
         //         const newJob = new Job(jobData);
