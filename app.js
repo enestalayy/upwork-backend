@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const { User, Job } = require("./models"); // MongoDB modellerimizi import ediyoruz
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -94,6 +94,7 @@ app.post("/api/filters", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server ${PORT} üzerinde çalışıyor...`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server ${PORT} üzerinde çalışıyor...`);
+// });
+module.exports = app;
