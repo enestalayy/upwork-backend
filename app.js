@@ -36,7 +36,7 @@ mongoose
 
 // createDefaultUser();
 
-async function scrapeAndSaveJobs() {
+app.get("/api/cron", async (req, res) => {
   try {
     const users = await User.find({});
     for (let user of users) {
@@ -54,18 +54,11 @@ async function scrapeAndSaveJobs() {
       }
     }
     console.log("Tüm kullanıcılar için işler scrape edildi ve kaydedildi.");
+    res.status(200).json({ message: "Cron job başarıyla çalıştı" });
   } catch (error) {
-    console.error("Scrape ve kaydetme işlemi sırasında hata:", error);
+    console.error("Cron job hatası:", error);
+    res.status(500).json({ error: "Sunucu hatası" });
   }
-}
-
-cron.schedule("*/5 * * * *", () => {
-  console.log("Cron job tetiklendi: Scrape işlemi başlatılıyor...");
-  scrapeAndSaveJobs();
-});
-
-app.get("/", (req, res) => {
-  res.send("Scraping cron job çalışıyor!");
 });
 
 // Yeni filter oluşturma endpoint'i
