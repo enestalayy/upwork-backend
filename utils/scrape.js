@@ -28,12 +28,11 @@ async function scrapeJobList(url) {
     args: [
       "--no-sandbox",
       "--disable-gpu",
-      "--headless",
       "--disable-dev-shm-usage",
       "--disable-setuid-sandbox",
       "--no-zygote",
     ],
-    dumpio: true, // Bu, tarayıcı sürecinin stdout ve stderr'ini yazdıracaktır
+    headless: "new",
     executablePath:
       process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
   });
