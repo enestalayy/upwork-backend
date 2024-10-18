@@ -31,12 +31,12 @@ async function scrapeJobList(url) {
     args: [
       "--no-sandbox",
       "--disable-gpu",
-      // "--headless",
+      "--headless",
       "--disable-dev-shm-usage",
       "--disable-setuid-sandbox",
       "--no-zygote",
     ],
-    headless: false,
+    // headless: false,
     executablePath:
       process.env.NODE_ENV === "development"
         ? "/usr/bin/google-chrome-stable"
