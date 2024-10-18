@@ -38,8 +38,8 @@ async function scrapeJobList(url) {
     ],
     headless: false,
     executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
+      process.env.NODE_ENV === "development"
+        ? "/usr/bin/google-chrome-stable"
         : puppeteer.executablePath(),
   });
 
