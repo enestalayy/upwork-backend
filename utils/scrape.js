@@ -28,13 +28,16 @@ async function scrapeJobList(url) {
     args: [
       "--no-sandbox",
       "--disable-gpu",
+      // "--headless",
       "--disable-dev-shm-usage",
       "--disable-setuid-sandbox",
       "--no-zygote",
     ],
-    headless: "new",
+    headless: false,
     executablePath:
-      process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
+      process.env.NODE_ENV === "production"
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
   });
 
   const page = await browser.newPage();
