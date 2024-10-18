@@ -33,6 +33,7 @@ async function scrapeJobList(url) {
       "--disable-setuid-sandbox",
       "--no-zygote",
     ],
+    dumpio: true, // Bu, tarayıcı sürecinin stdout ve stderr'ini yazdıracaktır
     executablePath:
       process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
   });
