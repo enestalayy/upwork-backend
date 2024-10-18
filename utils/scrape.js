@@ -1,7 +1,10 @@
 const puppeteer = require("puppeteer");
-require("dotenv").config();
 
 function parsePostedDate(dateString) {
+  console.log(
+    "process.env.PUPPETEER_EXECUTABLE_PATH",
+    process.env.PUPPETEER_EXECUTABLE_PATH
+  );
   const now = new Date();
   if (dateString.toLowerCase() === "yesterday") {
     dateString = "1 day ago";

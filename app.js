@@ -5,10 +5,7 @@ const jobRoutes = require("./routes/jobRoutes");
 const cronRoutes = require("./routes/cronRoutes");
 const filterRoutes = require("./routes/filterRoutes");
 const apiKeyMiddleware = require("./middlewares/apiKeyMiddleware");
-const puppeteer = require("puppeteer");
-
 require("dotenv").config();
-
 const app = express();
 
 app.use(express.json());
@@ -20,21 +17,6 @@ mongoose
   })
   .then(() => console.log("MongoDB'ye başarıyla bağlandı"))
   .catch((err) => console.error("MongoDB bağlantı hatası:", err));
-
-// Uygulama başlatılırken bu kodu çalıştırın
-(async () => {
-  try {
-    console.log("Chrome path:", process.env.PUPPETEER_EXECUTABLE_PATH);
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-    });
-    console.log("Browser version:", await browser.version());
-    await browser.close();
-  } catch (error) {
-    console.error("Error launching browser:", error);
-  }
-})();
 
 // middleware
 app.use("/api", apiKeyMiddleware);
@@ -51,5 +33,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Bir hata oluştu", error: err.message });
 });
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Server ${PORT} portunda çalışıyor`));
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 8000;
+  app.listen(PORT, () => console.log(`Server ${PORT} portunda çalışıyor`));
+}
+module.exports = app;
