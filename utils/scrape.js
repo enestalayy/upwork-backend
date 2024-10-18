@@ -34,6 +34,8 @@ async function scrapeJobList(url) {
       "--disable-dev-shm-usage",
       "--disable-setuid-sandbox",
       "--no-zygote",
+      "--single-process",
+      "--disable-accelerated-2d-canvas",
     ],
     headless: false,
     executablePath:
