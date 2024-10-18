@@ -1,26 +1,6 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-let browserInstance = null;
-
-const launchBrowser = async () => {
-  browserInstance = await puppeteer.launch({
-    args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-      "--disable-gpu",
-      "--disable-dev-shm-usage",
-      "--disable-accelerated-2d-canvas",
-    ],
-    executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-  });
-};
-
 function parsePostedDate(dateString) {
   const now = new Date();
   if (dateString.toLowerCase() === "yesterday") {
@@ -44,68 +24,70 @@ function parsePostedDate(dateString) {
 }
 
 async function scrapeJobList(url) {
-  try {
-    if (!browserInstance) {
-      await launchBrowser();
-    }
-    const page = await browserInstance.newPage();
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    );
+  const browser = await puppeteer.launch({
+    args: [
+      "--no-sandbox",
+      "--disable-gpu",
+      // "--headless",
+      "--disable-dev-shm-usage",
+      "--disable-setuid-sandbox",
+      "--no-zygote",
+    ],
+    headless: false,
+    executablePath:
+      process.env.NODE_ENV === "production"
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
+  });
 
-    await page.goto(url, { waitUntil: "networkidle0" });
-    await page.setViewport({ width: 1080, height: 1024 });
-    page.setDefaultTimeout(120000);
+  const page = await browser.newPage();
 
-    // Sayfa içeriğini konsola yazdırma (hata ayıklama için)
-    const pageContent = await page.content();
+  await page.goto(url);
 
-    const jobs = await page.evaluate(() => {
-      const articles = document.querySelectorAll("section article");
+  // Sayfa içeriğini konsola yazdırma (hata ayıklama için)
+  const pageContent = await page.content();
 
-      return Array.from(articles).map((article) => {
-        const job = {
-          title: article.querySelector("h2.job-tile-title a")?.innerText,
-          link: article.querySelector("h2.job-tile-title a")?.href,
-          postedDate: article.querySelector("small span:nth-child(2)")
-            ?.innerText,
-          clientLocation: article.querySelector('li[data-test="location"]')
-            ?.innerText,
-          paymentVerified: article.querySelector(
-            'li[data-test="payment-verified"]'
-          )?.innerText,
-          budget: article.querySelector(
-            'li[data-test="is-fixed-price"] strong:nth-child(2)'
-          )?.innerText,
-          description: article.querySelector(
-            'div[data-test="UpCLineClamp JobDescription"] p'
-          )?.innerText,
-          skills: Array.from(
-            article.querySelectorAll(".air3-token-container .air3-token span")
-          ).map((skill) => skill.innerText),
-        };
+  const jobs = await page.evaluate(() => {
+    const articles = document.querySelectorAll("section article");
 
-        return job;
-      });
+    return Array.from(articles).map((article) => {
+      const job = {
+        title: article.querySelector("h2.job-tile-title a")?.innerText,
+        link: article.querySelector("h2.job-tile-title a")?.href,
+        postedDate: article.querySelector("small span:nth-child(2)")?.innerText,
+        clientLocation: article.querySelector('li[data-test="location"]')
+          ?.innerText,
+        paymentVerified: article.querySelector(
+          'li[data-test="payment-verified"]'
+        )?.innerText,
+        budget: article.querySelector(
+          'li[data-test="is-fixed-price"] strong:nth-child(2)'
+        )?.innerText,
+        description: article.querySelector(
+          'div[data-test="UpCLineClamp JobDescription"] p'
+        )?.innerText,
+        skills: Array.from(
+          article.querySelectorAll(".air3-token-container .air3-token span")
+        ).map((skill) => skill.innerText),
+      };
+
+      return job;
     });
+  });
 
-    console.log("Total jobs scraped:", jobs.length);
+  console.log("Total jobs scraped:", jobs.length);
 
-    // postedDate'i parsePostedDate fonksiyonu ile işleme
-    const processedJobs = jobs.map((job) => {
-      job.postedDate = parsePostedDate(job.postedDate);
-      return job; // Her iş objesini geri döndür
-    });
+  // postedDate'i parsePostedDate fonksiyonu ile işleme
+  const processedJobs = jobs.map((job) => {
+    job.postedDate = parsePostedDate(job.postedDate);
+    return job; // Her iş objesini geri döndür
+  });
 
-    console.log("Processed jobs:", processedJobs);
+  console.log("Processed jobs:", processedJobs);
 
-    await page.close();
+  await browser.close();
 
-    return processedJobs;
-  } catch (e) {
-    console.error(`Error scraping job list: ${e}`);
-    throw e;
-  }
+  return processedJobs;
 }
 
 module.exports = scrapeJobList;
