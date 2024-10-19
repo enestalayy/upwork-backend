@@ -11,13 +11,45 @@ const app = express();
 app.use(express.json());
 console.log("process.env.MONGODB_URI :>> ", process.env.MONGODB_URI);
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB'ye başarıyla bağlandı"))
-  .catch((err) => console.error("MongoDB bağlantı hatası:", err));
+// MongoDB bağlantı fonksiyonu
+const connectToMongoDB = async (retryCount = 0) => {
+  const maxRetries = 5;
+  const retryDelay = 5000; // 5 saniye
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("MongoDB'ye başarıyla bağlandı");
+  } catch (err) {
+    console.error("MongoDB bağlantı hatası:", err);
+    if (retryCount < maxRetries) {
+      console.log(`${retryDelay / 1000} saniye sonra yeniden denenecek...`);
+      setTimeout(() => connectToMongoDB(retryCount + 1), retryDelay);
+    } else {
+      console.error(
+        "Maksimum yeniden deneme sayısına ulaşıldı. Bağlantı başarısız."
+      );
+    }
+  }
+};
+
+// İlk bağlantı denemesi
+connectToMongoDB();
+
+// Manuel yeniden bağlanma için endpoint
+app.get("/reconnect", async (req, res) => {
+  try {
+    await mongoose.disconnect();
+    await connectToMongoDB();
+    res.status(200).json({ message: "MongoDB bağlantısı yeniden kuruldu" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Yeniden bağlanma başarısız", error: error.message });
+  }
+});
 
 // middleware
 app.use("/api", apiKeyMiddleware);
