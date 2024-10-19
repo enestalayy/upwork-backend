@@ -48,6 +48,9 @@ async function scrapeJobList(url) {
 
   await page.goto(url);
 
+  const pageContent = await page.content();
+  console.log("pageContent", pageContent);
+
   const jobs = await page.evaluate(() => {
     const articles = document.querySelectorAll("section article");
 
