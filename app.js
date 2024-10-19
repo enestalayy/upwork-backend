@@ -32,6 +32,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Bir hata oluştu", error: err.message });
 });
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
