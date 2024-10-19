@@ -36,10 +36,10 @@ async function scrapeJobList(url) {
       "--no-zygote",
       "--single-process",
       "--disable-accelerated-2d-canvas",
+      "--headless",
     ],
-    headless: false,
     executablePath:
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV === "production"
         ? "/usr/bin/google-chrome-stable"
         : puppeteer.executablePath(),
   });
@@ -47,9 +47,6 @@ async function scrapeJobList(url) {
   const page = await browser.newPage();
 
   await page.goto(url);
-
-  // Sayfa içeriğini konsola yazdırma (hata ayıklama için)
-  const pageContent = await page.content();
 
   const jobs = await page.evaluate(() => {
     const articles = document.querySelectorAll("section article");
