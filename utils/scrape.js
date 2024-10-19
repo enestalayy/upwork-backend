@@ -1,4 +1,6 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+puppeteer.use(StealthPlugin());
 
 function parsePostedDate(dateString) {
   console.log(
@@ -29,14 +31,18 @@ function parsePostedDate(dateString) {
 async function scrapeJobList(url) {
   const browser = await puppeteer.launch({
     args: [
-      "--no-sandbox",
-      "--disable-gpu",
-      "--disable-dev-shm-usage",
+      // "--no-sandbox",
+      // "--disable-gpu",
+      // "--disable-dev-shm-usage",
+      // "--disable-setuid-sandbox",
+      // "--no-zygote",
+      // "--single-process",
+      // "--disable-accelerated-2d-canvas",
+      // "--headless",
       "--disable-setuid-sandbox",
-      "--no-zygote",
+      "--no-sandbox",
       "--single-process",
-      "--disable-accelerated-2d-canvas",
-      "--headless",
+      "--no-zygote",
     ],
     executablePath:
       process.env.NODE_ENV === "production"
@@ -46,7 +52,7 @@ async function scrapeJobList(url) {
 
   const page = await browser.newPage();
 
-  await page.goto(url);
+  await page.goto(url, { waitUntil: "load" });
 
   const pageContent = await page.content();
   console.log("pageContent", pageContent);
