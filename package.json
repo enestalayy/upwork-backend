@@ -16,7 +16,7 @@
     "mongoose": "^8.7.2",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.15",
-    "puppeteer": "^19.7.2",
+    "puppeteer": "^22.13.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
