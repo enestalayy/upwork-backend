@@ -65,9 +65,53 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Bir hata oluştu", error: err.message });
 });
+
+const scrapeJobList = require("./utils/scrape");
+
+// Manuel scrape işlemi için yeni endpoint
+app.post("/manual-scrape", async (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.status(400).json({ error: "URL gereklidir" });
+  }
+
+  try {
+    console.log(`Scraping jobs for URL: ${url}`);
+    const jobs = await scrapeJobList(url);
+    console.log(`Found ${jobs.length} jobs`);
+
+    // İş ilanlarını işle ve sonuçları döndür
+    const processedJobs = jobs.map((job) => ({
+      title: job.title,
+      link: job.link,
+      postedDate: job.postedDate,
+      clientLocation: job.clientLocation,
+      paymentVerified: job.paymentVerified,
+      budget: job.budget,
+      description: job.description,
+      skills: job.skills,
+    }));
+
+    res.json({
+      message: "Scraping işlemi başarılı",
+      jobCount: processedJobs.length,
+      jobs: processedJobs,
+    });
+  } catch (error) {
+    console.error("Scraping işlemi sırasında hata:", error);
+    res
+      .status(500)
+      .json({
+        error: "Scraping işlemi başarısız oldu",
+        details: error.message,
+      });
+  }
+});
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`Sunucu ${PORT} portunda çalışıyor`);
 });
 module.exports = app;
