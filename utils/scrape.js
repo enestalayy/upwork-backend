@@ -88,6 +88,8 @@ async function login() {
   await page.click("input[id='login_rememberme']");
 
   console.log("remember me tıklandı");
+  await page.click("input[id='login_control_continue']");
+
   await page.keyboard.press("Enter");
   console.log("Giriş yapılıyor...");
   await new Promise((resolve) => setTimeout(resolve, 10000));
