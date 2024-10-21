@@ -77,6 +77,10 @@ async function login() {
   console.log("E-posta giriliyor...");
 
   await page.type("#login_username", process.env.UPWORK_EMAIL);
+
+  const usernameValue = await page.$eval("#login_username", (el) => el.value);
+  console.log("E-posta girildi", usernameValue);
+
   await page.click("#login_password_continue");
   console.log("Password continue clicked");
   await page.waitForSelector(
@@ -84,6 +88,10 @@ async function login() {
     { visible: true, timeout: 120000 }
   );
   await page.type("#login_password", process.env.UPWORK_PASS);
+
+  const passwordValue = await page.$eval("#login_password", (el) => el.value);
+  console.log("Şifre girildi", passwordValue);
+
   await page.click("#login_rememberme");
   await page.click("#login_control_continue");
   console.log("Giriş yapılıyor...");
