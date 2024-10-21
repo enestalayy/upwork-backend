@@ -53,9 +53,9 @@ async function initBrowser() {
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
   console.log("Oturum kontrolü yapılıyor...", page);
-  await page.goto("https://www.upwork.com/", {
-    waitUntil: "networkidle0",
-    timeout: 60000,
+  await page.goto("https://www.upwork.com/ab/account-security/login", {
+    waitUntil: "load",
+    timeout: 120000,
   });
   console.log("Oturum kontrolü yapıldı", page.url());
   return page.url().includes("find-work");
