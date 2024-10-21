@@ -88,12 +88,28 @@ async function login() {
   await page.click("input[id='login_rememberme']");
 
   console.log("remember me tıklandı");
-  await page.click("input[id='login_control_continue']");
+  await page.click("button[id='login_control_continue']");
 
   await page.keyboard.press("Enter");
+
   console.log("Giriş yapılıyor...");
+  const continueButton = await page.$("button[id='login_control_continue']");
+  const continueButtonHTML = await page.evaluate(
+    (el) => el.outerHTML,
+    continueButton
+  );
+
+  console.log("Continue button element:", continueButton, continueButtonHTML);
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  console.log("Continue button element:", continueButton, continueButtonHTML);
   await new Promise((resolve) => setTimeout(resolve, 10000));
-  console.log("Giriş yapma tamamlandı", page.url());
+  console.log(
+    "Giriş yapma tamamlandı",
+    page.url(),
+    continueButton,
+    continueButtonHTML
+  );
 }
 
 async function scrapeJobList(url) {
