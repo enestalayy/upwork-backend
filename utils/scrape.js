@@ -53,7 +53,10 @@ async function initBrowser() {
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
   console.log("Oturum kontrolü yapılıyor...");
-  await page.goto("https://www.upwork.com/ab/account-security/login");
+  await page.goto("https://www.upwork.com/ab/account-security/login", {
+    waitUntil: "domcontentloaded",
+    timeout: 120000,
+  });
   await new Promise((resolve) => setTimeout(resolve, 10000));
 
   console.log("Oturum kontrolü yapıldı", page.url());
@@ -64,7 +67,10 @@ async function isLoggedIn() {
 async function login() {
   console.log("Giriş başladı...");
   if (!page.url().includes("login")) {
-    await page.goto("https://www.upwork.com/ab/account-security/login");
+    await page.goto("https://www.upwork.com/ab/account-security/login", {
+      waitUntil: "domcontentloaded",
+      timeout: 120000,
+    });
     await new Promise((resolve) => setTimeout(resolve, 10000));
   }
   console.log("E-posta giriliyor...");
@@ -124,7 +130,10 @@ async function scrapeJobList(url) {
   }
   console.log("Giriş yapılı, scrape işlemi başlatılıyor...");
 
-  await page.goto(url, { waitUntil: "load" });
+  await page.goto(url, {
+    waitUntil: "domcontentloaded",
+    timeout: 120000,
+  });
 
   const jobs = await page.evaluate(() => {
     const articles = document.querySelectorAll("section article");
