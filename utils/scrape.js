@@ -114,13 +114,6 @@ async function login() {
     )
   );
   await new Promise((resolve) => setTimeout(resolve, 10000));
-  console.log(
-    "Continue button element:",
-    await page.evaluate(
-      (el) => el.outerHTML,
-      await page.$("button[id='login_control_continue']")
-    )
-  );
 }
 
 async function scrapeJobList(url) {
