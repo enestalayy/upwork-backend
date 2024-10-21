@@ -83,10 +83,10 @@ async function login() {
 
   await page.click("#login_password_continue");
   console.log("Password continue clicked");
-  await page.waitForSelector(
-    ".small.mt-6x.mb-3x.pb-2x.ellipsis.font-weight-body",
-    { visible: true, timeout: 120000 }
-  );
+  await page.waitForSelector("#login_password", {
+    visible: true,
+    timeout: 120000,
+  });
   await page.type("#login_password", process.env.UPWORK_PASS);
 
   const passwordValue = await page.$eval("#login_password", (el) => el.value);
