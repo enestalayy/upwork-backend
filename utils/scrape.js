@@ -74,7 +74,10 @@ async function login() {
   await page.type("#login_username", process.env.UPWORK_EMAIL);
   await page.click("#login_password_continue");
   console.log("Password continue clicked");
-  await page.waitForSelector("#login_password", { visible: true });
+  await page.waitForSelector("#login_password", {
+    visible: true,
+    timeout: 120000,
+  });
   await page.type("#login_password", process.env.UPWORK_PASS);
   await page.click("#login_rememberme");
   await page.click("#login_control_continue");
