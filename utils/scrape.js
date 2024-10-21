@@ -52,10 +52,12 @@ async function initBrowser() {
 
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
-  console.log("Oturum kontrolü yapılıyor...");
+  console.log("Oturum kontrolü yapılıyor...", page);
   await page.goto("https://www.upwork.com/nx/find-work/", {
     waitUntil: "networkidle0",
+    timeout: 60000,
   });
+  console.log("Oturum kontrolü yapıldı", page.url());
   return page.url().includes("find-work");
 }
 
