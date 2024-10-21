@@ -53,10 +53,9 @@ async function initBrowser() {
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
   console.log("Oturum kontrolü yapılıyor...");
-  await page.goto("https://www.upwork.com/ab/account-security/login", {
-    waitUntil: "load",
-    timeout: 120000,
-  });
+  await page.goto("https://www.upwork.com/ab/account-security/login");
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+
   console.log("Oturum kontrolü yapıldı", page.url());
   return page.url().includes("find-work");
 }
@@ -65,10 +64,8 @@ async function isLoggedIn() {
 async function login() {
   console.log("Giriş başladı...");
   if (!page.url().includes("login")) {
-    await page.goto("https://www.upwork.com/ab/account-security/login", {
-      waitUntil: "load",
-      timeout: 120000,
-    });
+    await page.goto("https://www.upwork.com/ab/account-security/login");
+    await new Promise((resolve) => setTimeout(resolve, 10000));
   }
   console.log("E-posta giriliyor...");
   await page.locator("#login_username").fill(process.env.UPWORK_EMAIL);
@@ -94,6 +91,7 @@ async function login() {
   await page.keyboard.press("Enter");
   console.log("Giriş yapılıyor...");
   await new Promise((resolve) => setTimeout(resolve, 10000));
+  console.log("Giriş yapma tamamlandı", page.url());
 }
 
 async function scrapeJobList(url) {
