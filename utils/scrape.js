@@ -84,31 +84,42 @@ async function login() {
 
   const passwordValue = await page.$eval("#login_password", (el) => el.value);
   console.log("Şifre girildi", passwordValue);
-
-  await page.click("input[id='login_rememberme']");
-
-  console.log("remember me tıklandı");
-  await page.click("button[id='login_control_continue']");
+  console.log("Giriş yapılıyor...");
 
   await page.keyboard.press("Enter");
+  console.log(
+    "Continue button element:",
+    await page.evaluate(
+      (el) => el.outerHTML,
+      await page.$("button[id='login_control_continue']")
+    )
+  );
+  await page.click("button[id='login_control_continue']");
 
-  console.log("Giriş yapılıyor...");
-  const continueButton = await page.$("button[id='login_control_continue']");
-  const continueButtonHTML = await page.evaluate(
-    (el) => el.outerHTML,
-    continueButton
+  console.log(
+    "Continue button element:",
+    await page.evaluate(
+      (el) => el.outerHTML,
+      await page.$("button[id='login_control_continue']")
+    )
   );
 
-  console.log("Continue button element:", continueButton, continueButtonHTML);
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  console.log("Continue button element:", continueButton, continueButtonHTML);
+  console.log(
+    "Continue button element:",
+    await page.evaluate(
+      (el) => el.outerHTML,
+      await page.$("button[id='login_control_continue']")
+    )
+  );
   await new Promise((resolve) => setTimeout(resolve, 10000));
   console.log(
-    "Giriş yapma tamamlandı",
-    page.url(),
-    continueButton,
-    continueButtonHTML
+    "Continue button element:",
+    await page.evaluate(
+      (el) => el.outerHTML,
+      await page.$("button[id='login_control_continue']")
+    )
   );
 }
 
