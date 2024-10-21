@@ -11,10 +11,16 @@ const jobSchema = new mongoose.Schema({
   description: { type: String, required: true }, // İş açıklaması
   budget: { type: String, required: true }, // Bütçe
   link: { type: String, required: true }, // İşin linki
-  postedDate: { type: String, required: true }, // İlanın yayınlanma tarihi
+  postedDate: { type: Date, required: true }, // İlanın yayınlanma tarihi
   skills: [{ type: String, required: true }], // İstenen yetenekler
   coverLetter: { type: String, required: true }, // Ön yazı
   createdAt: { type: Date, default: Date.now },
+  // Yeni eklenen alanlar
+  paymentVerified: { type: Boolean, default: false },
+  clientRating: { type: String },
+  clientSpent: { type: String },
+  clientCountry: { type: String },
+  clientFeedback: { type: String },
 });
 
 module.exports = mongoose.model("Job", jobSchema);

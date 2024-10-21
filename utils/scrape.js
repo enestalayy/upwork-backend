@@ -1,12 +1,9 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+
 puppeteer.use(StealthPlugin());
 
 function parsePostedDate(dateString) {
-  console.log(
-    "process.env.PUPPETEER_EXECUTABLE_PATH",
-    process.env.PUPPETEER_EXECUTABLE_PATH
-  );
   const now = new Date();
   if (dateString.toLowerCase() === "yesterday") {
     dateString = "1 day ago";
@@ -28,29 +25,63 @@ function parsePostedDate(dateString) {
   return multiplier ? new Date(now - value * multiplier) : null;
 }
 
-async function scrapeJobList(url) {
-  const browser = await puppeteer.launch({
-    args: [
-      // "--no-sandbox",
-      // "--disable-gpu",
-      // "--disable-dev-shm-usage",
-      // "--disable-setuid-sandbox",
-      // "--no-zygote",
-      // "--single-process",
-      // "--disable-accelerated-2d-canvas",
-      // "--headless",
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-    ],
-    executablePath:
-      process.env.NODE_ENV === "production"
-        ? "/usr/bin/google-chrome-stable"
-        : puppeteer.executablePath(),
-  });
+let browser;
+let page;
 
-  const page = await browser.newPage();
+// Browser'ı başlatma fonksiyonu
+async function initBrowser() {
+  if (!browser) {
+    console.log("Browser initializing...");
+    browser = await puppeteer.launch({
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? "/usr/bin/google-chrome-stable"
+          : puppeteer.executablePath(),
+    });
+  }
+  if (!page) {
+    page = await browser.newPage();
+  }
+}
+
+// Oturum kontrolü fonksiyonu
+async function isLoggedIn() {
+  console.log("Oturum kontrolü yapılıyor...");
+  await page.goto("https://www.upwork.com/nx/find-work/", {
+    waitUntil: "networkidle0",
+  });
+  return page.url().includes("find-work");
+}
+
+// Giriş yapma fonksiyonu
+async function login() {
+  console.log("Giriş yapılıyor...");
+  await page.goto("https://www.upwork.com/ab/account-security/login", {
+    waitUntil: "networkidle0",
+  });
+  await page.type("#login_username", process.env.UPWORK_EMAIL);
+  await page.click("#login_password_continue");
+  await page.waitForSelector("#login_password", { visible: true });
+  await page.type("#login_password", process.env.UPWORK_PASS);
+  await page.click("#login_rememberme");
+  await page.click("#login_control_continue");
+  await page.waitForNavigation({ waitUntil: "networkidle0" });
+  console.log("Giriş başarılı!");
+}
+
+async function scrapeJobList(url) {
+  await initBrowser();
+
+  if (!(await isLoggedIn())) {
+    await login();
+  }
+  console.log("Giriş yapılı, scrape işlemi başlatılıyor...");
 
   await page.goto(url, { waitUntil: "load" });
 
@@ -62,11 +93,6 @@ async function scrapeJobList(url) {
         title: article.querySelector("h2.job-tile-title a")?.innerText,
         link: article.querySelector("h2.job-tile-title a")?.href,
         postedDate: article.querySelector("small span:nth-child(2)")?.innerText,
-        clientLocation: article.querySelector('li[data-test="location"]')
-          ?.innerText,
-        paymentVerified: article.querySelector(
-          'li[data-test="payment-verified"]'
-        )?.innerText,
         budget: article.querySelector(
           'li[data-test="is-fixed-price"] strong:nth-child(2)'
         )?.innerText,
@@ -76,6 +102,24 @@ async function scrapeJobList(url) {
         skills: Array.from(
           article.querySelectorAll(".air3-token-container .air3-token span")
         ).map((skill) => skill.innerText),
+        // Updated and new fields
+        paymentVerified:
+          article
+            .querySelector(
+              'li[data-test="payment-verified"] .air3-badge-tagline'
+            )
+            ?.innerText.trim() === "Payment verified",
+        clientRating: article.querySelector(
+          'div[data-test="feedback-rating UpCRating"] .air3-rating-value-text'
+        )?.innerText,
+        clientSpent: article.querySelector('li[data-test="total-spent"] strong')
+          ?.innerText,
+        clientCountry: article
+          .querySelector('li[data-test="location"] .air3-badge-tagline')
+          ?.innerText.trim(),
+        clientFeedback: article.querySelector(
+          'li[data-test="total-feedback"] [data-v-abdd572e]'
+        )?.innerText,
       };
 
       return job;
@@ -87,14 +131,21 @@ async function scrapeJobList(url) {
   // postedDate'i parsePostedDate fonksiyonu ile işleme
   const processedJobs = jobs.map((job) => {
     job.postedDate = parsePostedDate(job.postedDate);
-    return job; // Her iş objesini geri döndür
+    return job;
   });
 
   console.log("Processed jobs:", processedJobs);
 
-  await browser.close();
-
   return processedJobs;
 }
 
-module.exports = scrapeJobList;
+// Browser'ı kapatma fonksiyonu
+async function closeBrowser() {
+  if (browser) {
+    await browser.close();
+    browser = null;
+    page = null;
+  }
+}
+
+module.exports = { scrapeJobList, closeBrowser };
