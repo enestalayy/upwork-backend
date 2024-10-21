@@ -63,17 +63,23 @@ async function isLoggedIn() {
 
 // Giriş yapma fonksiyonu
 async function login() {
-  console.log("Giriş yapılıyor...");
-  await page.goto("https://www.upwork.com/ab/account-security/login", {
-    waitUntil: "networkidle0",
-  });
+  console.log("Giriş başladı...");
+  if (!page.url().includes("login")) {
+    await page.goto("https://www.upwork.com/ab/account-security/login", {
+      waitUntil: "load",
+      timeout: 120000,
+    });
+  }
+
   await page.type("#login_username", process.env.UPWORK_EMAIL);
   await page.click("#login_password_continue");
+  console.log("Password continue clicked");
   await page.waitForSelector("#login_password", { visible: true });
   await page.type("#login_password", process.env.UPWORK_PASS);
   await page.click("#login_rememberme");
   await page.click("#login_control_continue");
-  await page.waitForNavigation({ waitUntil: "networkidle0" });
+  console.log("Giriş yapılıyor...");
+  await page.waitForNavigation({ waitUntil: "load" });
   console.log("Giriş başarılı!");
 }
 
