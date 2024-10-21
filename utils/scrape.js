@@ -105,13 +105,13 @@ async function login() {
   );
 
   await new Promise((resolve) => setTimeout(resolve, 5000));
-
+  // Continue button element'i kontrol et ve el yoksa hata vermesini sağla
+  const continueButton = await page.$("button[id='login_control_continue']");
   console.log(
     "Continue button element:",
-    await page.evaluate(
-      (el) => el.outerHTML,
-      await page.$("button[id='login_control_continue']")
-    )
+    continueButton
+      ? await page.evaluate((el) => el.outerHTML, continueButton)
+      : "Button not found"
   );
   await new Promise((resolve) => setTimeout(resolve, 10000));
 }
