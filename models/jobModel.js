@@ -20,7 +20,6 @@ const jobSchema = new mongoose.Schema({
   clientRating: { type: String },
   clientSpent: { type: String },
   clientCountry: { type: String },
-  clientFeedback: { type: String },
 });
 
 module.exports = mongoose.model("Job", jobSchema);

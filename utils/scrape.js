@@ -129,9 +129,6 @@ async function scrapeJobList(url) {
         clientCountry: article
           .querySelector('li[data-test="location"] .air3-badge-tagline')
           ?.innerText.trim(),
-        clientFeedback: article.querySelector(
-          'li[data-test="total-feedback"] [data-v-abdd572e]'
-        )?.innerText,
       };
 
       return job;

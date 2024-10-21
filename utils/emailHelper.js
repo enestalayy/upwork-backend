@@ -22,6 +22,12 @@ async function sendNewJobsEmail(newJobs) {
       Skills: ${job.skills.join(", ")} <br/> 
       Link: <a href="${job.link}">${job.link}</a> <br/>
       Description: <p>${job.description}</p> <br/>
+      <p>${
+        job.paymentVerified ? "Payment Verified" : "Payment NOT Verified"
+      }</p> <br/>
+      Client Rating: <p>${job.clientRating} / 5</p>  <br/>
+      Client Spent: <p>${job.clientSpent}</p> <br/>
+      Client Country: <p>${job.clientCountry}</p> <br/>
       Cover Letter: <p>${job.coverLetter}</p> <br/>
     </li>
   `
