@@ -52,7 +52,7 @@ async function initBrowser() {
 
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
-  console.log("Oturum kontrolü yapılıyor...", page);
+  console.log("Oturum kontrolü yapılıyor...");
   await page.goto("https://www.upwork.com/ab/account-security/login", {
     waitUntil: "load",
     timeout: 120000,
@@ -70,6 +70,11 @@ async function login() {
       timeout: 120000,
     });
   }
+  await page.waitForSelector("#login_username", {
+    visible: true,
+    timeout: 120000,
+  });
+  console.log("E-posta giriliyor...");
 
   await page.type("#login_username", process.env.UPWORK_EMAIL);
   await page.click("#login_password_continue");
