@@ -31,7 +31,6 @@ let page;
 // Browser'ı başlatma fonksiyonu
 async function initBrowser() {
   if (!browser) {
-    console.log("Browser initializing...");
     browser = await puppeteer.launch({
       args: [
         "--disable-setuid-sandbox",
@@ -52,20 +51,17 @@ async function initBrowser() {
 
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
-  console.log("Oturum kontrolü yapılıyor...");
   await page.goto("https://www.upwork.com/ab/account-security/login", {
     waitUntil: "domcontentloaded",
     timeout: 120000,
   });
   await new Promise((resolve) => setTimeout(resolve, 10000));
 
-  console.log("Oturum kontrolü yapıldı", page.url());
   return page.url().includes("find-work");
 }
 
 // Giriş yapma fonksiyonu
 async function login() {
-  console.log("Giriş başladı...");
   if (!page.url().includes("login")) {
     await page.goto("https://www.upwork.com/ab/account-security/login", {
       waitUntil: "domcontentloaded",
@@ -73,52 +69,19 @@ async function login() {
     });
     await new Promise((resolve) => setTimeout(resolve, 10000));
   }
-  console.log("E-posta giriliyor...");
   await page.locator("#login_username").fill(process.env.UPWORK_EMAIL);
 
-  const usernameValue = await page.$eval("#login_username", (el) => el.value);
-  console.log("E-posta girildi", usernameValue);
-
   await page.keyboard.press("Enter");
-  console.log("username devam butonu tıklandı");
 
-  // 3 saniye bekleme koyduktan sonra ekran görüntüsü al
   await new Promise((resolve) => setTimeout(resolve, 10000));
   await page.type('input[id="login_password"]', process.env.UPWORK_PASS);
 
-  console.log("Password continue clicked");
-
-  const passwordValue = await page.$eval("#login_password", (el) => el.value);
-  console.log("Şifre girildi", passwordValue);
-  console.log("Giriş yapılıyor...");
-
   await page.keyboard.press("Enter");
-  console.log(
-    "Continue button element:",
-    await page.evaluate(
-      (el) => el.outerHTML,
-      await page.$("button[id='login_control_continue']")
-    )
-  );
+
   await page.click("button[id='login_control_continue']");
 
-  console.log(
-    "Continue button element:",
-    await page.evaluate(
-      (el) => el.outerHTML,
-      await page.$("button[id='login_control_continue']")
-    )
-  );
-
   await new Promise((resolve) => setTimeout(resolve, 5000));
-  // Continue button element'i kontrol et ve el yoksa hata vermesini sağla
-  const continueButton = await page.$("button[id='login_control_continue']");
-  console.log(
-    "Continue button element:",
-    continueButton
-      ? await page.evaluate((el) => el.outerHTML, continueButton)
-      : "Button not found"
-  );
+
   await new Promise((resolve) => setTimeout(resolve, 10000));
 }
 
@@ -128,7 +91,6 @@ async function scrapeJobList(url) {
   if (!(await isLoggedIn())) {
     await login();
   }
-  console.log("Giriş yapılı, scrape işlemi başlatılıyor...");
 
   await page.goto(url, {
     waitUntil: "domcontentloaded",
@@ -176,7 +138,7 @@ async function scrapeJobList(url) {
     });
   });
 
-  console.log("Total jobs scraped:", jobs.length);
+  // console.log("Total jobs scraped:", jobs.length);
 
   // postedDate'i parsePostedDate fonksiyonu ile işleme
   const processedJobs = jobs.map((job) => {
@@ -184,7 +146,7 @@ async function scrapeJobList(url) {
     return job;
   });
 
-  console.log("Processed jobs:", processedJobs);
+  // console.log("Processed jobs:", processedJobs);
 
   return processedJobs;
 }
