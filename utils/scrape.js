@@ -30,6 +30,7 @@ let page;
 
 // Browser'ı başlatma fonksiyonu
 async function initBrowser() {
+  console.log("Browser initializing...");
   if (!browser) {
     browser = await puppeteer.launch({
       args: [
@@ -51,11 +52,20 @@ async function initBrowser() {
 
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
+  console.log("Login page is loading...");
+
   await page.goto("https://www.upwork.com/ab/account-security/login", {
     waitUntil: "domcontentloaded",
     timeout: 120000,
   });
+  console.log("Login page loaded");
+
   await new Promise((resolve) => setTimeout(resolve, 10000));
+  console.log(
+    page.url().includes("find-work")
+      ? "Already logged in"
+      : "User not logged in"
+  );
 
   return page.url().includes("find-work");
 }
@@ -63,26 +73,30 @@ async function isLoggedIn() {
 // Giriş yapma fonksiyonu
 async function login() {
   if (!page.url().includes("login")) {
+    console.log("Moving to login page to log in");
     await page.goto("https://www.upwork.com/ab/account-security/login", {
       waitUntil: "domcontentloaded",
       timeout: 120000,
     });
     await new Promise((resolve) => setTimeout(resolve, 10000));
   }
+
   await page.locator("#login_username").fill(process.env.UPWORK_EMAIL);
+  console.log("email filled");
 
   await page.keyboard.press("Enter");
 
   await new Promise((resolve) => setTimeout(resolve, 10000));
   await page.type('input[id="login_password"]', process.env.UPWORK_PASS);
-
+  console.log("password filled");
   await page.keyboard.press("Enter");
 
   await page.click("button[id='login_control_continue']");
-
+  console.log("logging in...");
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
   await new Promise((resolve) => setTimeout(resolve, 10000));
+  console.log("Logged in");
 }
 
 async function scrapeJobList(url) {
@@ -91,11 +105,12 @@ async function scrapeJobList(url) {
   if (!(await isLoggedIn())) {
     await login();
   }
-
+  console.log("Moving to filter url...");
   await page.goto(url, {
     waitUntil: "domcontentloaded",
     timeout: 120000,
   });
+  console.log("Filter url page loaded");
 
   const jobs = await page.evaluate(() => {
     const articles = document.querySelectorAll("section article");
