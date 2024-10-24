@@ -19,6 +19,7 @@ function parsePostedDate(dateString) {
     minute: 60 * 1000,
     hour: 60 * 60 * 1000,
     day: 24 * 60 * 60 * 1000,
+    week: 7 * 24 * 60 * 60 * 1000,
   };
 
   const multiplier = unitMultipliers[unit.replace(/s$/, "")] || 0;
