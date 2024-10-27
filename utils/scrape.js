@@ -73,6 +73,8 @@ async function isLoggedIn() {
 
 // Giriş yapma fonksiyonu
 async function login() {
+  console.log("Login Function started");
+
   if (!page.url().includes("login")) {
     console.log("Moving to login page to log in");
     await page.goto("https://www.upwork.com/ab/account-security/login", {
