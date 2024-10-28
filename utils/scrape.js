@@ -53,22 +53,20 @@ async function initBrowser() {
 
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
-  console.log("Login page is loading...");
+  console.log("Oturum çerezi kontrolü başlatılıyor...");
 
-  await page.goto("https://www.upwork.com/ab/account-security/login", {
-    waitUntil: "domcontentloaded",
-    timeout: 120000,
-  });
-  console.log("Login page loaded");
-
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-  console.log(
-    page.url().includes("find-work")
-      ? "Already logged in"
-      : "User not logged in"
+  const cookies = await page.cookies();
+  const accessTokenCookie = cookies.find(
+    (cookie) => cookie.name === "master_access_token"
   );
 
-  return page.url().includes("find-work");
+  if (accessTokenCookie) {
+    console.log("Oturum açık, access token:", accessTokenCookie.value);
+    return true;
+  } else {
+    console.log("Access token bulunamadı, kullanıcı giriş yapmamış.");
+    return false;
+  }
 }
 
 // Giriş yapma fonksiyonu
@@ -96,14 +94,15 @@ async function login() {
 
   await page.click("button[id='login_control_continue']");
   console.log("logging in...");
-  await new Promise((resolve) => setTimeout(resolve, 5000));
 
   await new Promise((resolve) => setTimeout(resolve, 10000));
   console.log("Logged in");
 }
 
 async function scrapeJobList(url) {
-  await initBrowser();
+  if (!browser) {
+    await initBrowser();
+  }
 
   if (!(await isLoggedIn())) {
     await login();
@@ -153,7 +152,7 @@ async function scrapeJobList(url) {
     });
   });
 
-  // console.log("Total jobs scraped:", jobs.length);
+  console.log("Total jobs scraped:", jobs.length);
 
   // postedDate'i parsePostedDate fonksiyonu ile işleme
   const processedJobs = jobs.map((job) => {
@@ -166,13 +165,4 @@ async function scrapeJobList(url) {
   return processedJobs;
 }
 
-// Browser'ı kapatma fonksiyonu
-async function closeBrowser() {
-  if (browser) {
-    await browser.close();
-    browser = null;
-    page = null;
-  }
-}
-
-module.exports = { scrapeJobList, closeBrowser };
+module.exports = { scrapeJobList };

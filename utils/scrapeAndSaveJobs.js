@@ -1,4 +1,4 @@
-const { scrapeJobList, closeBrowser } = require("./scrape");
+const { scrapeJobList } = require("./scrape");
 const Job = require("../models/jobModel");
 const User = require("../models/userModel");
 const { generateCoverLetter } = require("../utils/geminiHelper");
@@ -73,7 +73,6 @@ async function scrapeAndSaveJobs() {
     }
 
     console.log("Tüm kullanıcılar için iş ilanları başarıyla güncellendi");
-    await closeBrowser();
   } catch (error) {
     console.error("Scraping ve kaydetme işlemi sırasında hata:", error);
     throw error;
