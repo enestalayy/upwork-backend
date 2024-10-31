@@ -46,9 +46,6 @@ async function initBrowser() {
           : puppeteer.executablePath(),
     });
   }
-  if (!page) {
-    page = await browser.newPage();
-  }
 }
 
 // Oturum kontrolü fonksiyonu
@@ -102,6 +99,9 @@ async function login() {
 async function scrapeJobList(url) {
   if (!browser) {
     await initBrowser();
+  }
+  if (!page) {
+    page = await browser.newPage();
   }
 
   if (!(await isLoggedIn())) {
