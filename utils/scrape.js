@@ -50,7 +50,11 @@ async function initBrowser() {
 
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
-  console.log("Oturum çerezi kontrolü başlatılıyor...");
+  console.log("Oturum çerezi kontrolü başlatılıyor...", page);
+
+  if (!page) {
+    page = await browser.newPage();
+  }
 
   const cookies = await page.cookies();
   const accessTokenCookie = cookies.find(
