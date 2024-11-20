@@ -31,7 +31,7 @@ let page;
 
 // Browser'ı başlatma fonksiyonu
 async function initBrowser() {
-  console.log("Browser initializing...");
+  // console.log("Browser initializing...");
   if (!browser) {
     browser = await puppeteer.launch({
       args: [
@@ -50,7 +50,7 @@ async function initBrowser() {
 
 // Oturum kontrolü fonksiyonu
 async function isLoggedIn() {
-  console.log("Oturum çerezi kontrolü başlatılıyor...", page);
+  // console.log("Oturum çerezi kontrolü başlatılıyor...", page);
 
   if (!page) {
     page = await browser.newPage();
@@ -62,20 +62,20 @@ async function isLoggedIn() {
   );
 
   if (accessTokenCookie) {
-    console.log("Oturum açık, access token:", accessTokenCookie.value);
+    // console.log("Oturum açık, access token:", accessTokenCookie.value);
     return true;
   } else {
-    console.log("Access token bulunamadı, kullanıcı giriş yapmamış.");
+    // console.log("Access token bulunamadı, kullanıcı giriş yapmamış.");
     return false;
   }
 }
 
 // Giriş yapma fonksiyonu
 async function login() {
-  console.log("Login Function started");
+  // console.log("Login Function started");
 
   if (!page.url().includes("login")) {
-    console.log("Moving to login page to log in");
+    // console.log("Moving to login page to log in");
     await page.goto("https://www.upwork.com/ab/account-security/login", {
       waitUntil: "domcontentloaded",
       timeout: 120000,
@@ -84,27 +84,27 @@ async function login() {
   }
 
   await page.locator("#login_username").fill(process.env.UPWORK_EMAIL);
-  console.log("email filled");
+  // console.log("email filled");
 
   await page.keyboard.press("Enter");
 
   await new Promise((resolve) => setTimeout(resolve, 10000));
   await page.type('input[id="login_password"]', process.env.UPWORK_PASS);
-  console.log("password filled");
+  // console.log("password filled");
   await page.keyboard.press("Enter");
 
   await page.click("button[id='login_control_continue']");
-  console.log("logging in...");
+  // console.log("logging in...");
 
   await new Promise((resolve) => setTimeout(resolve, 10000));
-  console.log("Logged in");
+  // console.log("Logged in");
 }
 
 async function scrapeJobList(url) {
   if (!browser) {
     await initBrowser();
   }
-  console.log("page: " + page);
+  // console.log("page: " + page);
   if (!page) {
     page = await browser.newPage();
   }
@@ -112,12 +112,12 @@ async function scrapeJobList(url) {
   if (!(await isLoggedIn())) {
     await login();
   }
-  console.log("Moving to filter url...");
+  // console.log("Moving to filter url...");
   await page.goto(url, {
     waitUntil: "domcontentloaded",
     timeout: 120000,
   });
-  console.log("Filter url page loaded");
+  // console.log("Filter url page loaded");
 
   const jobs = await page.evaluate(() => {
     const articles = document.querySelectorAll("section article");
@@ -157,7 +157,7 @@ async function scrapeJobList(url) {
     });
   });
 
-  console.log("Total jobs scraped:", jobs.length);
+  // console.log("Total jobs scraped:", jobs.length);
 
   // postedDate'i parsePostedDate fonksiyonu ile işleme
   const processedJobs = jobs.map((job) => {
@@ -165,7 +165,7 @@ async function scrapeJobList(url) {
     return job;
   });
 
-  // console.log("Processed jobs:", processedJobs);
+  // // console.log("Processed jobs:", processedJobs);
 
   return processedJobs;
 }

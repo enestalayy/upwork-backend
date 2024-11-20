@@ -48,7 +48,7 @@ async function sendNewJobsEmail(newJobs) {
   try {
     // E-postayı gönder
     let info = await transporter.sendMail(mailOptions);
-    console.log("E-posta gönderildi: %s", info.messageId);
+    // console.log("E-posta gönderildi: %s", info.messageId);
     return true;
   } catch (error) {
     console.error("E-posta gönderimi sırasında hata oluştu:", error);

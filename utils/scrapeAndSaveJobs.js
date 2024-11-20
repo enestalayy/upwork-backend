@@ -15,15 +15,15 @@ async function scrapeAndSaveJobs() {
 
     // Her kullanıcı için döngü
     for (const user of users) {
-      console.log(`Processing user: ${user.email}`);
+      // console.log(`Processing user: ${user.email}`);
       let newJobsForUser = [];
 
       // Her filtre için scraping işlemini gerçekleştir
       for (const filter of user.filters) {
-        console.log(`Scraping jobs for filter: ${filter.name}`);
+        // console.log(`Scraping jobs for filter: ${filter.name}`);
         try {
           const jobs = await scrapeJobList(filter.url);
-          console.log(`Found ${jobs.length} jobs for filter: ${filter.name}`);
+          // console.log(`Found ${jobs.length} jobs for filter: ${filter.name}`);
 
           // Her iş ilanı için
           for (const jobData of jobs) {
@@ -43,7 +43,7 @@ async function scrapeAndSaveJobs() {
                   coverLetter: coverLetter,
                 });
                 await newJob.save();
-                console.log(`New job added with cover letter: ${newJob.title}`);
+                // console.log(`New job added with cover letter: ${newJob.title}`);
                 newJobsForUser.push(newJob);
               }
             } catch (jobError) {
@@ -61,18 +61,18 @@ async function scrapeAndSaveJobs() {
       if (newJobsForUser.length > 0) {
         const emailSent = await sendNewJobsEmail(newJobsForUser);
         if (emailSent) {
-          console.log(
+          // console.log(
             `${newJobsForUser.length} yeni iş ilanı ${user.email} adresine e-posta ile gönderildi.`
           );
         } else {
           console.error(`${user.email} adresine e-posta gönderilemedi.`);
         }
       } else {
-        console.log(`${user.email} için yeni iş ilanı bulunamadı.`);
+        // console.log(`${user.email} için yeni iş ilanı bulunamadı.`);
       }
     }
 
-    console.log("Tüm kullanıcılar için iş ilanları başarıyla güncellendi");
+    // console.log("Tüm kullanıcılar için iş ilanları başarıyla güncellendi");
   } catch (error) {
     console.error("Scraping ve kaydetme işlemi sırasında hata:", error);
     throw error;

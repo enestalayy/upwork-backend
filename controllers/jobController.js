@@ -21,13 +21,13 @@ exports.getJobsByFilter = async (req, res) => {
 
     // Daha fazla sayfa olup olmadığını kontrol et
     const hasMore = page < totalPages;
-    console.log("jobs :>> ", {
-      jobs,
-      currentPage: page,
-      totalPages,
-      hasMore,
-      totalJobs,
-    });
+    // console.log("jobs :>> ", {
+    //   jobs,
+    //   currentPage: page,
+    //   totalPages,
+    //   hasMore,
+    //   totalJobs,
+    // });
     res.json({
       jobs,
       currentPage: page,
