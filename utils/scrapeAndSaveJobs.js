@@ -62,8 +62,8 @@ async function scrapeAndSaveJobs() {
         const emailSent = await sendNewJobsEmail(newJobsForUser);
         if (emailSent) {
           // console.log(
-            `${newJobsForUser.length} yeni iş ilanı ${user.email} adresine e-posta ile gönderildi.`
-          );
+          //   `${newJobsForUser.length} yeni iş ilanı ${user.email} adresine e-posta ile gönderildi.`
+          // );
         } else {
           console.error(`${user.email} adresine e-posta gönderilemedi.`);
         }
