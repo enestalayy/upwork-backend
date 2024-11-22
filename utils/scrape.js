@@ -104,7 +104,7 @@ async function scrapeJobList(url) {
   if (!browser) {
     await initBrowser();
   }
-  // console.log("page: " + page);
+  console.log("page: " + page);
   if (!page) {
     page = await browser.newPage();
   }
