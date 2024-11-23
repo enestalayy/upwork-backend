@@ -104,10 +104,10 @@ async function scrapeJobList(url) {
   if (!browser) {
     await initBrowser();
   }
-  console.log("page: " + page);
   if (!page) {
     page = await browser.newPage();
   }
+  console.log("page: " + page);
 
   if (!(await isLoggedIn())) {
     await login();
